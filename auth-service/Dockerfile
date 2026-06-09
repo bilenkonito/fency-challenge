@@ -1,5 +1,5 @@
 # Build stage.
-FROM golang:1.26.4-alpine AS build
+FROM golang:1.26.4-trixie AS build
 WORKDIR /src
 
 # Dependencies are vendored (see ./vendor) to prevent network related issues in CI/CD (e.g. GitHub Actions runners without internet access).
