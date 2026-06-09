@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- Strict CSP keeps the popup safe from injected/inline script. -->
+        <link rel="stylesheet" href="popup.css" />
+        <title>Fency</title>
+    </head>
+    <body>
+        <header class="header">
+            <h1>Fency</h1>
+        </header>
+
+        <!-- Login view -->
+        <section id="login-view" class="view hidden">
+            <p class="subtitle">Sign in to enable domain blocking.</p>
+            <form id="login-form" autocomplete="on">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" autocomplete="username" required />
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required />
+
+                <p id="login-error" class="error hidden" role="alert"></p>
+
+                <button id="login-button" type="submit">Sign in</button>
+            </form>
+        </section>
+
+        <!-- Status view -->
+        <section id="status-view" class="view hidden">
+            <p class="status">
+                Signed in as <strong id="status-username"></strong>
+            </p>
+            <p class="muted">
+                Blocking <strong id="status-count">0</strong> domain(s). The list syncs
+                automatically from your Fency account.
+            </p>
+            <button id="refresh-button" type="button" class="secondary">Refresh now</button>
+            <button id="logout-button" type="button">Sign out</button>
+        </section>
+
+        <script type="module" src="popup.js"></script>
+    </body>
+
+</html>

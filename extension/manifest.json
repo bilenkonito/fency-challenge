@@ -1,0 +1,35 @@
+{
+    "manifest_version": 3,
+    "name": "Fency — Domain Blocker",
+    "version": "1.0.0",
+    "description": "Requires login and blocks navigation to domains on your Fency blacklist.",
+    "minimum_chrome_version": "108",
+    "permissions": [
+        "storage",
+        "alarms",
+        "declarativeNetRequest"
+    ],
+    "host_permissions": [
+        "http://localhost:8080/*",
+        "http://localhost:3000/*",
+        "<all_urls>"
+    ],
+    "background": {
+        "service_worker": "src/background.js",
+        "type": "module"
+    },
+    "action": {
+        "default_title": "Fency",
+        "default_popup": "popup/popup.html"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "blocked/blocked.html"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
+}

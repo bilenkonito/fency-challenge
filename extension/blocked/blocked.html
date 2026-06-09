@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="blocked.css" />
+        <title>Domain blocked — Fency</title>
+    </head>
+    <body>
+        <main class="card">
+            <div class="shield">⛔</div>
+            <h1>Access blocked</h1>
+            <p>
+                The domain
+                <!-- Filled in via textContent to avoid injecting untrusted query data into the DOM. -->
+                <code id="domain">this site</code>
+                is on your Fency blacklist and has been blocked.
+            </p>
+            <p class="muted">
+                If you believe this is a mistake, remove the domain from your blacklist
+                in the Fency web app.
+            </p>
+            <button id="back" type="button">Go back</button>
+        </main>
+        <script src="blocked.js"></script>
+    </body>
+</html>
