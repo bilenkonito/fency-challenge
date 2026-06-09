@@ -1,0 +1,47 @@
+services:
+  data-service:
+    build: ./data-service
+    image: fency/data-service
+    environment:
+      PORT: "9090"
+      # Default ODBC DSN points at a local SQLite file on the persisted volume.
+      # Swap this for any ODBC DSN (PostgreSQL, SQL Server, …) to change backend.
+      ODBC_DSN: ${ODBC_DSN:-Driver=SQLite3;Database=/data/fency.db;}
+      DATA_SERVICE_API_KEY: ${DATA_SERVICE_API_KEY:?DATA_SERVICE_API_KEY must be set, e.g. in a .env file}
+      SEED_USER: ${SEED_USER:-admin}
+      SEED_USER_PASSWORD: ${SEED_USER_PASSWORD:-ChangeMe123!}
+      SEED_DOMAINS: ${SEED_DOMAINS:-malware-example.com,phishing-example.net}
+    volumes:
+      - data-db:/data
+    networks:
+      - internal
+    # NOTE: intentionally no "ports:" — never exposed outside the private network.
+    restart: unless-stopped
+
+  auth-service:
+    build: ./auth-service
+    image: fency/auth-service
+    environment:
+      PORT: "8080"
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set, e.g. in a .env file}
+      JWT_ISSUER: ${JWT_ISSUER:-fency-auth}
+      TOKEN_TTL: ${TOKEN_TTL:-60m}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
+      DATA_SERVICE_URL: http://data-service:9090
+      DATA_SERVICE_API_KEY: ${DATA_SERVICE_API_KEY:?DATA_SERVICE_API_KEY must be set}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - data-service
+    networks:
+      - public
+      - internal
+    restart: unless-stopped
+
+volumes:
+  data-db:
+
+networks:
+  public:
+  internal:
+    internal: true

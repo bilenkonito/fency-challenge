@@ -1,0 +1,5 @@
+.dockerignore
+Dockerfile
+*_test.go
+*.db
+data/

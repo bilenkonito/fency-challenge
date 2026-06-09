@@ -1,8 +1,58 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": ".",
+            "name": "TeamFenceCodeChallenge"
 		}
 	],
-	"settings": {}
+	"settings": {
+        "files.trimTrailingWhitespace": true,
+        "files.exclude": {
+            "**/.DS_Store": true,
+            "**/.git": true,
+            "**/coverage": true,
+            "**/desktop.ini": true,
+            "**/dist": true,
+            "**/node_modules": true,
+            "**/package-lock.json": true,
+            "**/yarn.lock": true
+        },
+        "docker.extension.editor.dockerfileBuildStageDecorationLines": true,
+        "docker.lsp.experimental.vulnerabilityScanning": true,
+        "docker.lsp.experimental.scout.vulnerabilities": true,
+        "docker.lsp.experimental.scout.criticalHighVulnerabilities": true,
+        "docker.lsp.experimental.scout.notPinnedDigest": true,
+        "docker.lsp.experimental.scout.recommendedTag": true,
+        "docker.languageserver.diagnostics.directiveCasing": "error",
+        "docker.languageserver.diagnostics.instructionCasing": "error",
+        "docker.languageserver.diagnostics.instructionCmdMultiple": "error",
+        "docker.languageserver.diagnostics.instructionEntrypointMultiple": "error",
+        "docker.languageserver.diagnostics.instructionHealthcheckMultiple": "error",
+        "docker.languageserver.diagnostics.instructionJSONInSingleQuotes": "error",
+        "docker.languageserver.diagnostics.instructionWorkdirRelative": "warning",
+        "docker.languageserver.diagnostics.emptyContinuationLine": "warning",
+        "docker.languageserver.diagnostics.deprecatedMaintainer": "error",
+        "docker.languageserver.formatter.ignoreMultilineInstructions": false,
+        "docker.lsp.telemetry": "off"
+    },
+    "extensions": {
+        "recommendations": [
+            "aaron-bond.better-comments",
+            "docker.docker",
+            "fill-labs.dependi",
+            "github.vscode-github-actions",
+            "golang.go",
+            "leosj29.bash-sh-runner",
+            "mads-hartmann.bash-ide-vscode",
+            "ms-azuretools.vscode-containers",
+            "ms-edgedevtools.vscode-edge-devtools",
+            "ms-vscode.vscode-typescript-next",
+            "redhat.vscode-xml",
+            "redhat.vscode-yaml",
+            "rogalmic.bash-debug",
+            "vue.volar",
+            "yoavbls.pretty-ts-errors",
+            "yzhang.markdown-all-in-one"
+        ]
+    }
 }

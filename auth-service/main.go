@@ -24,13 +24,7 @@ func main() {
 		log.Fatalf("configuration error: %v", err)
 	}
 
-	seedUser := getEnv("SEED_USER", "admin")
-	seedPass := getEnv("SEED_USER_PASSWORD", "ChangeMe123!")
-
-	repo, err := users.NewMemoryRepository(seedUser, seedPass)
-	if err != nil {
-		log.Fatalf("failed to seed user store: %v", err)
-	}
+	repo := users.NewHTTPRepository(cfg.DataServiceURL, cfg.DataServiceAPIKey)
 
 	svc := auth.NewService(repo, cfg.JWTSecret, cfg.TokenTTL, cfg.Issuer)
 	h := handlers.New(svc)
@@ -48,7 +42,7 @@ func main() {
 
 	// Graceful shutdown on SIGINT/SIGTERM.
 	go func() {
-		log.Printf("auth-service listening on :%s (seed user %q)", cfg.Port, seedUser)
+		log.Printf("auth-service listening on :%s (users via data-service %s)", cfg.Port, cfg.DataServiceURL)
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatalf("server error: %v", err)
 		}
@@ -64,11 +58,4 @@ func main() {
 		log.Printf("graceful shutdown failed: %v", err)
 	}
 	log.Println("auth-service stopped")
-}
-
-func getEnv(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return fallback
 }

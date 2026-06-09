@@ -20,6 +20,10 @@ type Config struct {
 	Issuer string
 	// Origins permitted by CORS.
 	AllowedOrigins []string
+	// Data Service base URL.
+	DataServiceURL string
+	// Data Service API key.
+	DataServiceAPIKey string
 }
 
 // Reads configuration from environment variables.
@@ -47,12 +51,19 @@ func Load() (*Config, error) {
 		origins = splitAndTrim(raw)
 	}
 
+	apiKey := os.Getenv("DATA_SERVICE_API_KEY")
+	if apiKey == "" {
+		return nil, fmt.Errorf("DATA_SERVICE_API_KEY environment variable is required and must not be empty")
+	}
+
 	return &Config{
-		Port:           getEnv("PORT", "8080"),
-		JWTSecret:      []byte(secret),
-		TokenTTL:       ttl,
-		Issuer:         getEnv("JWT_ISSUER", "fency-auth"),
-		AllowedOrigins: origins,
+		Port:              getEnv("PORT", "8080"),
+		JWTSecret:         []byte(secret),
+		TokenTTL:          ttl,
+		Issuer:            getEnv("JWT_ISSUER", "fency-auth"),
+		AllowedOrigins:    origins,
+		DataServiceURL:    getEnv("DATA_SERVICE_URL", "http://data-service:9090"),
+		DataServiceAPIKey: apiKey,
 	}, nil
 }
 

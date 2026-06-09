@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  data-service:
+    name: data-service (Go + ODBC)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: data-service
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install unixODBC and the SQLite ODBC driver
+        run: |
+          sudo apt-get update
+          # The libsqliteodbc package auto-registers the "SQLite3" driver in
+          # /etc/odbcinst.ini, which the default DSN refers to.
+          sudo apt-get install -y --no-install-recommends \
+            unixodbc unixodbc-dev libsqliteodbc
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.4"
+          cache-dependency-path: data-service/go.sum
+
+      - name: Verify formatting
+        run: |
+          unformatted=$(gofmt -l . | grep -v '^vendor/' || true)
+          if [ -n "$unformatted" ]; then
+            echo "These files are not gofmt-ed:"; echo "$unformatted"; exit 1
+          fi
+
+      - name: Vet
+        env:
+          CGO_ENABLED: "1"
+        run: go vet ./...
+
+      - name: Test
+        env:
+          CGO_ENABLED: "1"
+        run: go test -race ./...
+
+      - name: Build
+        env:
+          CGO_ENABLED: "1"
+        run: go build -mod=vendor ./...
+
+  auth-service:
+    name: auth-service (Go)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: auth-service
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.4"
+          cache-dependency-path: auth-service/go.sum
+
+      - name: Verify formatting
+        run: |
+          unformatted=$(gofmt -l . | grep -v '^vendor/' || true)
+          if [ -n "$unformatted" ]; then
+            echo "These files are not gofmt-ed:"; echo "$unformatted"; exit 1
+          fi
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        env:
+          JWT_SECRET: ci-test-secret-at-least-16-chars
+        run: go test -race ./...
+
+      - name: Build
+        run: go build -mod=vendor ./...
