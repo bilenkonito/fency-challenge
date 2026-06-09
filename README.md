@@ -352,4 +352,4 @@ number of practices (without aiming for enterprise completeness):
 - **Extension host permission.** A navigation blocker needs broad host access
   (`<all_urls>`) to redirect arbitrary blocked sites; this is inherent to the
   feature and is the same model ad/content blockers use.
-```
+
