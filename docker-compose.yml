@@ -1,3 +1,18 @@
+# Runs the three backend services together.
+#
+# Network topology:
+#   - "public"  : bridge network for services that the host/browser reach
+#                 (auth-service, blacklist-service publish ports here).
+#   - "internal": private network (internal: true => no external connectivity)
+#                 shared by the backend services and the data-service. The
+#                 data-service publishes NO ports and lives only here, so it is
+#                 reachable solely by its Docker DNS name "data-service" from
+#                 sibling services — never from the host or the internet.
+#
+# Secrets come from a .env file (copy .env.example to .env); nothing is
+# hardcoded. JWT_SECRET is shared by auth + blacklist; DATA_SERVICE_API_KEY is
+# shared by all three so the auth and blacklist services can call the data-service.
+
 services:
   data-service:
     build: ./data-service
@@ -33,6 +48,26 @@ services:
       - "8080:8080"
     depends_on:
       - data-service
+    networks:
+      - public
+      - internal
+    restart: unless-stopped
+
+  blacklist-service:
+    build: ./blacklist-service
+    image: fency/blacklist-service
+    environment:
+      PORT: "3000"
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set, e.g. in a .env file}
+      JWT_ISSUER: ${JWT_ISSUER:-fency-auth}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
+      DATA_SERVICE_URL: http://data-service:9090
+      DATA_SERVICE_API_KEY: ${DATA_SERVICE_API_KEY:?DATA_SERVICE_API_KEY must be set}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - data-service
+      - auth-service
     networks:
       - public
       - internal
